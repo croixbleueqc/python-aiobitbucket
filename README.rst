@@ -221,6 +221,19 @@ Get the content of a file for a commit
     # branch is an object provided by repo.refs().branches.get()
     content = await repo.src().download(branch.target.hash, "version.txt")
 
+Create or update a pure text file (new commit)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code:: python
+
+    await repo.src().upload_pure_text(
+        "/path/to/file.txt",
+        "new file content\n",
+        "commit message",
+        "User <user@domain.tld>",
+        "branch"
+    )
+
 Get all pipelines build for a repository
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

@@ -103,6 +103,10 @@ class _Network(object):
         async with self.session.post(self.base_url + url, json=payload) as resp:
             return await self.answer(resp)
 
+    async def post_form(self, url, payload):
+        async with self.session.post(self.base_url + url, data=payload) as resp:
+            return await self.answer(resp)
+
     async def delete(self, url):
         async with self.session.delete(self.base_url + url) as resp:
             await self.answer(resp)
@@ -135,6 +139,10 @@ class Network(object):
     @classmethod
     def post(cls, url, payload):
         return network.post(url, payload)
+
+    @classmethod
+    def post_form(cls, url, payload):
+        return network.post_form(url, payload)
 
     @classmethod
     def delete(cls, url):
