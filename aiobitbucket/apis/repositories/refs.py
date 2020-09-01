@@ -39,6 +39,9 @@ class Branches(ApiBranchPagination):
     def __init__(self, api_url_refs):
         ApiBranchPagination.__init__(self, api_url_refs + "/branches", Branch)
 
+    def by_name(self, name):
+        return Branch(self._api_url, name=name)
+
 class Refs(object):
     def __init__(self, api_url_reposlug):
         self.branches = Branches(api_url_reposlug + "/refs")
