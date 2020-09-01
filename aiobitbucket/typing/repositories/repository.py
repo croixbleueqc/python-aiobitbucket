@@ -41,6 +41,20 @@ class Scm(Enum):
     def __str__(self):
         return self.value
 
+class LinksClone(Typing2):
+    href = Field()
+    name = Field()
+
+class Links(Typing2):
+    clone = Field().list_of(inside_instanciator=LinksClone)
+
+    def find_clone_by_name(self, name):
+        for i in self.clone:
+            if i.name == name:
+                return i
+
+        return None
+
 class Repository(Typing2):
     scm = Field(default=Scm.GIT) \
         .converter(loads=Scm, dumps=str)
@@ -51,5 +65,6 @@ class Repository(Typing2):
     fork_policy = Field(default=ForkPolicy.NO_PUBLIC_FORKS) \
         .converter(loads=ForkPolicy, dumps=str)
     language = Field(default="")
+    links = Field(instanciator=Links)
 
 
