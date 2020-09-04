@@ -46,6 +46,12 @@ class GroupPrivilege(Typing2):
     group = Field() \
         .getters(__get_group_slug_only)
 
+    def __eq__(self, other):
+        if not isinstance(other, GroupPrivilege):
+            return False
+
+        return self.privilege == other.privilege and self.group == other.group
+
 class GroupPrivileges(Typing2):
     """Group all privilegies"""
     privileges = Field().list_of(GroupPrivilege)

@@ -75,3 +75,27 @@ class BranchRestriction(Typing2):
         if self.branch_match_kind != BranchMatchKind.BRANCHING_MODEL:
             # Do not use it when branch_match_kind is not branching_model.
             dump.pop("branch_type")
+
+    def __eq__(self, other):
+        if not isinstance(other, BranchRestriction):
+            return False
+
+        if len(self.users) != len(other.users) or len(self.groups) != len(other.groups):
+            return False
+
+        # test users
+        for user in self.users:
+            if user not in other.users:
+                return False
+
+        # test groups
+        for group in self.groups:
+            if group not in other.groups:
+                return False
+
+        return \
+            self.kind == other.kind and \
+            self.branch_match_kind == other.branch_match_kind and \
+            self.branch_type == other.branch_type and \
+            self.pattern == other.pattern and \
+            self.value == other.value
