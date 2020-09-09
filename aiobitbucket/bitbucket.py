@@ -23,9 +23,9 @@ class Bitbucket(object):
     """Bitbucket API main entrypoints"""
 
     def __init__(self, base_url="https://api.bitbucket.org"):
-        self.network = Network.create_unique_instance(base_url)
-        self.user = User()
-        self.repositories = Repositories()
+        self.network = Network(base_url)
+        self.user = User(self.network)
+        self.repositories = Repositories(self.network)
 
     def open_basic_session(self, username, password):
         """Connect to the API with basic authentication"""

@@ -29,8 +29,8 @@ class PipelinesConfig(ApiLeaf, pipeline.RepositoryPipelinesConfiguration):
     - GET: Retrieve the repository pipelines configuration.
     - PUT: Update the pipelines configuration for a repository.
     """
-    def __init__(self, api_url_reposlug, data=None, parent=None):
-        ApiLeaf.__init__(self, api_url_reposlug + "/pipelines_config", ApiLeaf.DELETE | ApiLeaf.CREATE)
+    def __init__(self, api_url_reposlug, network, data=None, parent=None):
+        ApiLeaf.__init__(self, api_url_reposlug + "/pipelines_config", network, ApiLeaf.DELETE | ApiLeaf.CREATE)
         pipeline.RepositoryPipelinesConfiguration.__init__(self, data=data, parent=parent)
 
     async def enable(self):

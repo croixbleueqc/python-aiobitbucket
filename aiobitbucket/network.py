@@ -32,7 +32,7 @@ from .errors import NetworkBadRequest, NetworkForbidden, NetworkNotFound, Networ
 
 logger = logging.getLogger(Settings.LOG_NETWORK)
 
-class _Network(object):
+class Network(object):
     """
     Network
 
@@ -54,6 +54,7 @@ class _Network(object):
     async def close_session(self):
         if self.session is not None:
             await self.session.close()
+            self.session = None
         
         await asyncio.sleep(0.250)
 
@@ -111,43 +112,6 @@ class _Network(object):
         async with self.session.delete(self.base_url + url) as resp:
             await self.answer(resp)
 
-# Unique instance shared by all modules (avoid passing network or core object to all objects)
-network = None
-
-class Network(object):
-    """
-    Network Accessor (wrapper for network instance)
-    """
-    @classmethod
-    def create_unique_instance(cls, base_url):
-        global network
-        network = _Network(base_url)
-        return network
-
-    @classmethod
-    def get_unique_instance(cls):
-        return network
-
-    @classmethod
-    def get(cls, url):
-        return network.get(url)
-
-    @classmethod
-    def put(cls, url, payload):
-        return network.put(url, payload)
-
-    @classmethod
-    def post(cls, url, payload):
-        return network.post(url, payload)
-
-    @classmethod
-    def post_form(cls, url, payload):
-        return network.post_form(url, payload)
-
-    @classmethod
-    def delete(cls, url):
-        return network.delete(url)
-
 class NetworkPagination(object):
     """
     Generic support for pagination
@@ -155,11 +119,12 @@ class NetworkPagination(object):
     https://developer.atlassian.com/bitbucket/api/2/reference/meta/pagination
     """
 
-    def __init__(self, url : str, dynamic_cast=None, pagelen=Settings.MAX_PAGELEN):
+    def __init__(self, url : str, network, dynamic_cast=None, pagelen=Settings.MAX_PAGELEN):
         if "?" in url:
             self.url = f"{url}&pagelen={pagelen}"
         else:
             self.url = f"{url}?pagelen={pagelen}"
+        self._network = network
         self.dynamic_cast = dynamic_cast
 
         logger.debug(f"pagination url: {self.url}")
@@ -182,7 +147,7 @@ class NetworkPagination(object):
 
     async def fetch(self):
         if len(self._values) == 0 and self._next is not None:
-            result = await network.get(self._next)
+            result = await self._network.get(self._next)
             for value in result["values"]:
                 self._values.append(value)
             self._next = result.get("next")

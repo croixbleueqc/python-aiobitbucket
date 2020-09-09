@@ -28,8 +28,8 @@ class Repositories(ApiBranchPagination):
            and does not distinguish between direct and indirect privileges.
     """
 
-    def __init__(self):
-        ApiBranchPagination.__init__(self, "/2.0/user/permissions/repositories", Permission, ApiBranchPagination.NEW)
+    def __init__(self, network):
+        ApiBranchPagination.__init__(self, "/2.0/user/permissions/repositories", network, Permission, ApiBranchPagination.NEW)
 
     async def get_by_full_name(self, repo_full_name):
         """Get permissions for a specific repository"""
@@ -46,13 +46,15 @@ class Permissions(object):
     https://developer.atlassian.com/bitbucket/api/2/reference/resource/user/permissions
     """
 
-    # Repositories API accessor
-    repositories = Repositories()
+    def __init__(self, network):
+        # Repositories API accessor
+        self.repositories = Repositories(network)
 
 class User(object):
     """
     Covering https://developer.atlassian.com/bitbucket/api/2/reference/resource/user
     """
 
-    # Permissions API accessor
-    permissions = Permissions()
+    def __init__(self, network):
+        # Permissions API accessor
+        self.permissions = Permissions(network)

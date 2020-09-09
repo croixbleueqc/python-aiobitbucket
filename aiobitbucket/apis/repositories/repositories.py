@@ -25,6 +25,9 @@ class Repositories(object):
     """
     https://developer.atlassian.com/bitbucket/api/2/reference/resource/repositories
     """
+    def __init__(self, network):
+        self._network = network
+
     def repo_slug(self, workspace_name, repo_slug_name):
         """Repository API shortcut accessor"""
-        return RepoSlug(workspace_name, repo_slug_name)
+        return RepoSlug(self._network, workspace_name, repo_slug_name)

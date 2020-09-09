@@ -19,8 +19,8 @@ from ...api import ApiLeaf, ApiBranchPagination
 from ...typing import refs
 
 class Branch(ApiLeaf, refs.Branch):
-    def __init__(self, api_url, name=None, data=None, parent=None):
-        ApiLeaf.__init__(self, api_url, api_unsupported=ApiLeaf.CREATE | ApiLeaf.UPDATE)
+    def __init__(self, api_url, network, name=None, data=None, parent=None):
+        ApiLeaf.__init__(self, api_url, network, api_unsupported=ApiLeaf.CREATE | ApiLeaf.UPDATE)
         refs.Branch.__init__(self, data=data, parent=parent)
 
         if name is not None:
@@ -36,12 +36,12 @@ class Branch(ApiLeaf, refs.Branch):
             )
 
 class Branches(ApiBranchPagination):
-    def __init__(self, api_url_refs):
-        ApiBranchPagination.__init__(self, api_url_refs + "/branches", Branch)
+    def __init__(self, api_url_refs, network):
+        ApiBranchPagination.__init__(self, api_url_refs + "/branches", network, Branch)
 
     def by_name(self, name):
-        return Branch(self._api_url, name=name)
+        return Branch(self._api_url, self._network, name=name)
 
 class Refs(object):
-    def __init__(self, api_url_reposlug):
-        self.branches = Branches(api_url_reposlug + "/refs")
+    def __init__(self, api_url_reposlug, network):
+        self.branches = Branches(api_url_reposlug + "/refs", network)

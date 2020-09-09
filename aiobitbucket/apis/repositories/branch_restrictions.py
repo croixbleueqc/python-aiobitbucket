@@ -30,8 +30,8 @@ class BranchRestriction(ApiLeaf, branch_restrictions.BranchRestriction):
     - PUT: Updates an existing branch restriction rule.
     - DELETE: Deletes an existing branch restriction rule.
     """
-    def __init__(self, api_url, id=None, data=None, parent=None):
-        ApiLeaf.__init__(self, api_url)
+    def __init__(self, api_url, network, id=None, data=None, parent=None):
+        ApiLeaf.__init__(self, api_url, network)
         branch_restrictions.BranchRestriction.__init__(self, data=data, parent=parent)
 
         if id is not None:
@@ -56,8 +56,8 @@ class BranchRestrictions(ApiBranchPagination):
     - GET: Returns a paginated list of all branch restrictions on the repository.
     - POST: Delegate to BranchRestriction
     """
-    def __init__(self, api_url_reposlug):
-        ApiBranchPagination.__init__(self, api_url_reposlug + "/branch-restrictions", BranchRestriction)
+    def __init__(self, api_url_reposlug, network):
+        ApiBranchPagination.__init__(self, api_url_reposlug + "/branch-restrictions", network, BranchRestriction)
     
     def by_id(self, id):
-        return BranchRestriction(self._api_url, id=id)
+        return BranchRestriction(self._api_url, self._network, id=id)

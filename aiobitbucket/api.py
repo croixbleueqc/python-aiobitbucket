@@ -17,7 +17,7 @@
 
 
 from .errors import ApiUnsupported
-from .network import Network, NetworkPagination
+from .network import NetworkPagination
 from .settings import Settings
 
 """
@@ -40,8 +40,9 @@ class ApiLeaf(object):
     DELETE = 1 << 2
     CREATE = 1 << 3
 
-    def __init__(self, api_url, api_unsupported=0):
+    def __init__(self, api_url, network, api_unsupported=0):
         self._api_url = api_url
+        self._network = network
         self._api_unsupported = api_unsupported
 
     def _generate_api_url(self):
@@ -54,7 +55,7 @@ class ApiLeaf(object):
         if self._api_unsupported & ApiLeaf.GET > 0:
             raise ApiUnsupported("GET")
 
-        state = await Network.get(self._generate_api_url())
+        state = await self._network.get(self._generate_api_url())
         self.loads_from_dict(state)
     
     async def update(self):
@@ -64,7 +65,7 @@ class ApiLeaf(object):
         if self._api_unsupported & ApiLeaf.UPDATE > 0:
             raise ApiUnsupported("PUT")
 
-        await Network.put(
+        await self._network.put(
             self._generate_api_url(),
             self.dumps()
         )
@@ -76,7 +77,7 @@ class ApiLeaf(object):
         if self._api_unsupported & ApiLeaf.DELETE > 0:
             raise ApiUnsupported("DELETE")
 
-        await Network.delete(self._generate_api_url())
+        await self._network.delete(self._generate_api_url())
 
     async def create(self):
         """
@@ -87,7 +88,7 @@ class ApiLeaf(object):
         if self._api_unsupported & ApiLeaf.CREATE > 0:
             raise ApiUnsupported("POST")
 
-        result = await Network.post(
+        result = await self._network.post(
             self._api_url,
             self.dumps()
         )
@@ -102,8 +103,9 @@ class ApiBranchPagination(object):
     """
     NEW = 1 << 0
 
-    def __init__(self, api_url, cast_leaf, api_unsupported=0):
+    def __init__(self, api_url, network, cast_leaf, api_unsupported=0):
         self._api_url = api_url
+        self._network = network
         self._cast_leaf = cast_leaf
         self._api_unsupported = api_unsupported
     
@@ -116,12 +118,13 @@ class ApiBranchPagination(object):
                 return value
             
             if issubclass(self._cast_leaf, ApiLeaf):
-                return self._cast_leaf(self._api_url, data=value)
+                return self._cast_leaf(self._api_url, self._network, data=value)
             else:
                 return self._cast_leaf(value)
 
         return NetworkPagination(
             self._api_url if filter is None else f"{self._api_url}?{filter}",
+            self._network,
             cast,
             pagelen=pagelen
         )
@@ -132,4 +135,4 @@ class ApiBranchPagination(object):
         """
         if self._api_unsupported & ApiBranchPagination.NEW > 0:
             raise ApiUnsupported("NEW")
-        return self._cast_leaf(self._api_url)
+        return self._cast_leaf(self._api_url, self._network)

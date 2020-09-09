@@ -31,8 +31,8 @@ class DeployKey(ApiLeaf,deploykey.DeployKey):
     - PUT: Update a deploy key (WARNING: Seems not really supported despite documented on API 2.0)
     - DELETE: This deletes a deploy key from a repository.
     """
-    def __init__(self, api_url, key_id=None, data=None, parent=None):
-        ApiLeaf.__init__(self, api_url)
+    def __init__(self, api_url, network, key_id=None, data=None, parent=None):
+        ApiLeaf.__init__(self, api_url, network)
         deploykey.DeployKey.__init__(self, data=data, parent=parent)
 
         if key_id is not None:
@@ -56,8 +56,8 @@ class DeployKeys(ApiBranchPagination):
     - POST: Delegate to DeployKey object
     """
 
-    def __init__(self, api_url_reposlug):
-        ApiBranchPagination.__init__(self, api_url_reposlug + "/deploy-keys", DeployKey)
+    def __init__(self, api_url_reposlug, network):
+        ApiBranchPagination.__init__(self, api_url_reposlug + "/deploy-keys", network, DeployKey)
 
     def by_key_id(self, key_id):
-        return DeployKey(self._api_url, key_id=key_id)
+        return DeployKey(self._api_url, self._network, key_id=key_id)
