@@ -19,8 +19,18 @@ from ...api import ApiLeaf, ApiBranchPagination
 from ...typing import refs
 
 class Branch(ApiLeaf, refs.Branch):
+    """
+    Manages Branch
+
+    https://developer.atlassian.com/bitbucket/api/2/reference/resource/repositories/%7Bworkspace%7D/%7Brepo_slug%7D/refs/branches/%7Bname%7D
+
+    Coverage:
+    - GET: Returns a branch object within the specified repository.
+    - POST: Creates a new branch in the specified repository. (Delegate from Branches)
+    - DELETE: Delete a branch in the specified repository (The main branch is not allowed to be deleted).
+    """
     def __init__(self, api_url, network, name=None, data=None, parent=None):
-        ApiLeaf.__init__(self, api_url, network, api_unsupported=ApiLeaf.CREATE | ApiLeaf.UPDATE)
+        ApiLeaf.__init__(self, api_url, network, api_unsupported=ApiLeaf.UPDATE)
         refs.Branch.__init__(self, data=data, parent=parent)
 
         if name is not None:
@@ -36,6 +46,13 @@ class Branch(ApiLeaf, refs.Branch):
             )
 
 class Branches(ApiBranchPagination):
+    """
+    https://developer.atlassian.com/bitbucket/api/2/reference/resource/repositories/%7Bworkspace%7D/%7Brepo_slug%7D/refs/branches
+
+    Coverage:
+    - GET: Returns a list of all open branches within the specified repository. Results will be in the order the source control manager returns them.
+    - POST: Delegate to Branch object
+    """
     def __init__(self, api_url_refs, network):
         ApiBranchPagination.__init__(self, api_url_refs + "/branches", network, Branch)
 

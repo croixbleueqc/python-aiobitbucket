@@ -26,6 +26,7 @@ from ..legacy.group_privileges import GroupPrivilegesRepoSlug
 from .pipelines import Pipelines
 from .refs import Refs
 from .src import Src
+from .pullrequests import PullRequests
 
 class RepoSlug(ApiLeaf, repository.Repository):
     """
@@ -70,4 +71,9 @@ class RepoSlug(ApiLeaf, repository.Repository):
         return Refs(self._api_url, self._network)
     
     def src(self):
+        """Source files accessor"""
         return Src(self._api_url, self._network)
+
+    def pullrequests(self):
+        """Pull Requests accessor"""
+        return PullRequests(self._api_url, self._network)

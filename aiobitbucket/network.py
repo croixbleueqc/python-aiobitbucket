@@ -120,7 +120,9 @@ class NetworkPagination(object):
     """
 
     def __init__(self, url : str, network, dynamic_cast=None, pagelen=Settings.MAX_PAGELEN):
-        if "?" in url:
+        if pagelen is None:
+            self.url = url
+        elif "?" in url:
             self.url = f"{url}&pagelen={pagelen}"
         else:
             self.url = f"{url}?pagelen={pagelen}"

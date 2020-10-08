@@ -213,6 +213,31 @@ Get all branches for a repository
     async for branch in repo.refs().branches.get():
         print(branch)
 
+Add a new branch
+^^^^^^^^^^^^^^^^
+
+.. code:: python
+
+    # by using an existing branch
+    ref = repo.refs().branches.by_name("deploy/dev")
+    await ref.get()
+    ref.name = "deploy/dev-next"
+    await ref.create()
+
+    # alternative
+    ref = repo.refs().branches.new()
+    ref.name = "deploy/dev-next"
+    ref.target.hash = "a valid commit"
+    await ref.create()
+
+Delete a branch (not the main one)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code:: python
+
+    ref = repo.refs().branches.by_name("deploy/dev-next")
+    await ref.delete()
+
 Get the content of a file for a commit
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -247,6 +272,55 @@ Get all pipelines build for a repository
         if pipeline.target.ref_name == "master" and \
             pipeline.state.result.name == "SUCCESSFUL":
             print(pipeline)
+
+Get all pull requests
+^^^^^^^^^^^^^^^^^^^^^
+
+.. code:: python
+
+    # OPEN pull requests by default
+    async for pullrequest in repo.pullrequests().get():
+        print(pullrequest)
+
+    # All pull requests
+    async for pullrequest in repo.pullrequests().get(filter="state=*"):
+        print(pullrequest)
+
+    # Use aiobitbucket.typing.repositories.pullrequests.State to query any other states
+
+    from aiobitbucket.typing.repositories import pullrequests as typing_pr
+
+    # (eg with State.DECLINED)
+    async for pullrequest in repo.pullrequests().get(filter=f"state={typing_pr.State.DECLINED}"):
+        print(pullrequest)
+
+    # (eg with State.DECLINED and State.OPEN)
+    async for pullrequest in repo.pullrequests().get(filter=f"state={typing_pr.State.DECLINED}&state={typing_pr.State.OPEN}"):
+        print(pullrequest)
+
+Get a specific pull request
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code:: python
+
+    p = repo.pullrequests().by_id(2)
+    await p.get()
+    print(p)
+
+Create a pull request
+^^^^^^^^^^^^^^^^^^^^^
+
+.. code:: python
+
+    from aiobitbucket.apis.repositories import pullrequests
+
+    pr : pullrequests.PullRequest = repo.pullrequests().new()
+    pr.title = "my pr"
+    pr.close_source_branch = True
+    pr.source.branch.name = "next"
+    pr.destination.branch.name = "master"
+
+    await pr.create()
 
 Error Types
 -----------
