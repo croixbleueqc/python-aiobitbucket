@@ -1,4 +1,4 @@
-# Copyright 2020 Croix Bleue du Québec
+# Copyright 2020-2022 Croix Bleue du Québec
 
 # This file is part of python-aiobitbucket.
 
@@ -19,6 +19,7 @@ class Settings:
     # HTTP returns code
     SUCCESS = 200
     CREATED = 201
+    ACCEPTED = 202
     NO_CONTENT = 204
     BAD_REQUEST = 400
     UNAUTHORIZED = 401

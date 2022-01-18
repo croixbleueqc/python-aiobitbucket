@@ -1,4 +1,4 @@
-# Copyright 2020 Croix Bleue du Québec
+# Copyright 2020-2022 Croix Bleue du Québec
 
 # This file is part of python-aiobitbucket.
 
@@ -18,6 +18,7 @@
 from .network import Network
 from .apis.user.user import User
 from .apis.repositories.repositories import Repositories
+from .apis.webhooks.webhooks import WebHooks
 
 class Bitbucket(object):
     """Bitbucket API main entrypoints"""
@@ -26,6 +27,7 @@ class Bitbucket(object):
         self.network = Network(base_url)
         self.user = User(self.network)
         self.repositories = Repositories(self.network)
+        self.webhooks = WebHooks(self.network)
 
     def open_basic_session(self, username, password):
         """Connect to the API with basic authentication"""
