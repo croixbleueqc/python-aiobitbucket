@@ -54,7 +54,7 @@ class WebHooks(ApiBranchPagination):
     async def get_by_workspace(self,api_url_workspace):
         ApiBranchPagination.__init__(self, api_url_workspace+"/hooks",self.network,WebHookUUID)
     
-    async def get_by_repertory_name(self, repo_full_name):
+    async def get_by_repository_name(self, repo_full_name):
         """Get hooks for a specific repository"""
 
         repos = self.get(f'q=repository.full_name="{repo_full_name}"')
