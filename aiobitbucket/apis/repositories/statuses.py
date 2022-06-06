@@ -18,13 +18,14 @@
 from ...api import ApiLeaf, ApiBranchPagination
 from ...typing.repositories import commit_status
 
+
 class CommitStatus(ApiLeaf, commit_status.CommitStatus):
     def __init__(self, api_url, network, id=None, data=None, parent=None):
         ApiLeaf.__init__(self, api_url, network)
         commit_status.CommitStatus.__init__(self, data=data, parent=parent)
         if id is not None:
             self.id = id
-    
+
 
 class Statuses(ApiBranchPagination):
     """
@@ -32,6 +33,8 @@ class Statuses(ApiBranchPagination):
 
     https://developer.atlassian.com/bitbucket/api/2/reference/resource/repositories/%7Bworkspace%7D/%7Brepo_slug%7D/commit/%7Bcommit%7D/statuses
     """
-    def __init__(self, api_url_commit, network):
-        ApiBranchPagination.__init__(self, api_url_commit + "/statuses", network, CommitStatus)
 
+    def __init__(self, api_url_commit, network):
+        ApiBranchPagination.__init__(
+            self, api_url_commit + "/statuses", network, CommitStatus
+        )

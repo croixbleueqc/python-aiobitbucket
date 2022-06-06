@@ -25,29 +25,33 @@ Note: for now there only build status , eventualy there might be more.
 from typing_engine.typing import Typing2, Field
 from enum import Enum
 
+
 class State(Enum):
     INPROGRESS = "INPROGRESS"
     SUCCESSFUL = "SUCCESSFUL"
-    FAILED     = "FAILED"
-    STOPPED    = "STOPPED" 
+    FAILED = "FAILED"
+    STOPPED = "STOPPED"
 
     def __str__(self):
         return self.value
+
 
 class LinksHref(Typing2):
     href = Field()
     name = Field()
 
+
 class Links(Typing2):
-    commit      = Field(instanciator=LinksHref)
+    commit = Field(instanciator=LinksHref)
+
 
 class CommitStatus(Typing2):
-    links       = Field(instanciator=Links)
-    uuid        = Field()
-    key         = Field()
-    name        = Field()
-    description = Field() 
-    state       = Field().converter(loads=State, dumps=str)
-    url         = Field()
-    created_on  = Field()
-    updated_on  = Field()
+    links = Field(instanciator=Links)
+    uuid = Field()
+    key = Field()
+    name = Field()
+    description = Field()
+    state = Field().converter(loads=State, dumps=str)
+    url = Field()
+    created_on = Field()
+    updated_on = Field()

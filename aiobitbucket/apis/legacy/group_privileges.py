@@ -17,7 +17,8 @@
 
 from ...typing.legacy.group_privileges import GroupPrivileges, Privilege
 
-class GroupPrivilegesRepoSlug():
+
+class GroupPrivilegesRepoSlug:
     """
     Use the group-privileges resource to query and manipulate the group privileges (permissions) of a Bitbucket Cloudaccount's repositories.
 
@@ -28,6 +29,7 @@ class GroupPrivilegesRepoSlug():
     - PUT group privileges on a repository
     - DELETE group privileges from a repository
     """
+
     def __init__(self, network, workspace_name, repo_slug_name):
         self._api_url = f"/1.0/group-privileges/{workspace_name}/{repo_slug_name}"
         self._network = network
@@ -36,28 +38,22 @@ class GroupPrivilegesRepoSlug():
     async def get(self):
         """GET a list of privileged groups for a repository"""
         results = await self._network.get(self._api_url)
-        group_privileges = GroupPrivileges({
-            "privileges": results
-        })
+        group_privileges = GroupPrivileges({"privileges": results})
         return group_privileges
 
-    async def add(self, group, privilege : Privilege, group_owner=None):
+    async def add(self, group, privilege: Privilege, group_owner=None):
         """PUT group privileges on a repository"""
         await self._network.put(
             "{}/{}/{}".format(
-                self._api_url,
-                group_owner or self.default_group_owner,
-                group
+                self._api_url, group_owner or self.default_group_owner, group
             ),
-            privilege.value
+            privilege.value,
         )
 
     async def delete(self, group, group_owner=None):
         """DELETE group privileges from a repository"""
         await self._network.delete(
             "{}/{}/{}".format(
-                self._api_url,
-                group_owner or self.default_group_owner,
-                group
+                self._api_url, group_owner or self.default_group_owner, group
             )
         )

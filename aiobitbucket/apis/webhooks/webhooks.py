@@ -14,46 +14,56 @@
 
 # You should have received a copy of the GNU Lesser General Public License
 # along with python-aiobitbucket.  If not, see <https://www.gnu.org/licenses/>.
-from ...api import ApiLeaf,ApiBranchPagination
+from ...api import ApiLeaf, ApiBranchPagination
 from ...typing.webhooks import webhook
 
-class WebHookUUID (ApiLeaf,webhook.WebHookUUID):
-    """
-        Manages one webhook
 
-        https://developer.atlassian.com/bitbucket/api/2/reference/resource/workspaces/%7Bworkspace%7D/hooks/%7Buid%7D
-
-        Coverage:
-        - DELETE : Deletes the specified webhook subscription from the given workspace.
-        - GET : Returns the webhook with the specified id installed on the given workspace.
-        - PUT : Updates the specified webhook subscription.
-                The following properties can be mutated:
-                    description
-                    url
-                    active
-                    events
+class WebHookUUID(ApiLeaf, webhook.WebHookUUID):
     """
-    def __init__(self, api_url_workspace, network, uid=None, data=None , parent = None):
-        ApiLeaf(api_url_workspace+f"/hooks/{uid}",network,api_unsupported=ApiLeaf.CREATE)
+    Manages one webhook
+
+    https://developer.atlassian.com/bitbucket/api/2/reference/resource/workspaces/%7Bworkspace%7D/hooks/%7Buid%7D
+
+    Coverage:
+    - DELETE : Deletes the specified webhook subscription from the given workspace.
+    - GET : Returns the webhook with the specified id installed on the given workspace.
+    - PUT : Updates the specified webhook subscription.
+            The following properties can be mutated:
+                description
+                url
+                active
+                events
+    """
+
+    def __init__(self, api_url_workspace, network, uid=None, data=None, parent=None):
+        ApiLeaf(
+            api_url_workspace + f"/hooks/{uid}", network, api_unsupported=ApiLeaf.CREATE
+        )
         self._network = network
         self.id = uid
         self.data = data
-        
-    
+
+
 class WebHooks(ApiBranchPagination):
     """
     Manages WebHooks
 
     https://developer.atlassian.com/bitbucket/api/2/reference/resource/workspaces/%7Bworkspace%7D/hooks
     """
+
     def __init__(self, network):
         self.network = network
+
     async def get_by_workspace(self, api_url_workspace, network):
-        ApiBranchPagination.__init__(self, api_url_workspace + "/hooks", network, WebHookUUID)
-    
-    async def get_by_workspace(self,api_url_workspace):
-        ApiBranchPagination.__init__(self, api_url_workspace+"/hooks",self.network,WebHookUUID)
-    
+        ApiBranchPagination.__init__(
+            self, api_url_workspace + "/hooks", network, WebHookUUID
+        )
+
+    async def get_by_workspace(self, api_url_workspace):
+        ApiBranchPagination.__init__(
+            self, api_url_workspace + "/hooks", self.network, WebHookUUID
+        )
+
     async def get_by_repository_name(self, repo_full_name):
         """Get hooks for a specific repository"""
 

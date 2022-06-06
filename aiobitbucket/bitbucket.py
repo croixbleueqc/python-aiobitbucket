@@ -20,6 +20,7 @@ from .apis.user.user import User
 from .apis.repositories.repositories import Repositories
 from .apis.webhooks.webhooks import WebHooks
 
+
 class Bitbucket(object):
     """Bitbucket API main entrypoints"""
 
@@ -32,12 +33,8 @@ class Bitbucket(object):
     def open_basic_session(self, username, password):
         """Connect to the API with basic authentication"""
 
-        self.network.create_session(
-            auth=self.network.basic_auth(username, password)
-        )
-    
+        self.network.create_session(auth=self.network.basic_auth(username, password))
+
     async def close_session(self):
         """Clean up the session"""
         await self.network.close_session()
-
-

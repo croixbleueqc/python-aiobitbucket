@@ -17,6 +17,7 @@
 
 from ...api import ApiLeaf
 
+
 class Src(object):
     """
     Manages source code files
@@ -24,19 +25,15 @@ class Src(object):
     https://developer.atlassian.com/bitbucket/api/2/reference/resource/repositories/{workspace}/{repo_slug}
     https://developer.atlassian.com/bitbucket/api/2/reference/resource/repositories/%7Bworkspace%7D/%7Brepo_slug%7D/src/%7Bnode%7D/%7Bpath%7D
     """
+
     def __init__(self, api_url_reposlug, network):
         self._api_url = api_url_reposlug + "/src"
         self._network = network
 
     async def download(self, node, path):
         return await self._network.get(f"{self._api_url}/{node}/{path}")
-    
+
     async def upload_pure_text(self, filename, txt, message, author, branch):
-        data = {
-            filename: txt,
-            "message": message,
-            "author": author,
-            "branch": branch
-        }
+        data = {filename: txt, "message": message, "author": author, "branch": branch}
 
         return await self._network.post_form(self._api_url, data)

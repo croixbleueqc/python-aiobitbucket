@@ -7,12 +7,14 @@ https://developer.atlassian.com/bitbucket/api/2/reference/resource/repositories/
 from typing_engine.typing import Typing2, Field
 from enum import Enum
 
+
 class BranchMatchKind(Enum):
-    BRANCHING_MODEL="branching_model"
-    GLOB="glob"
+    BRANCHING_MODEL = "branching_model"
+    GLOB = "glob"
 
     def __str__(self):
         return self.value
+
 
 # Copyright 2020 Croix Bleue du Québec
 
@@ -31,6 +33,7 @@ class BranchMatchKind(Enum):
 # You should have received a copy of the GNU Lesser General Public License
 # along with python-aiobitbucket.  If not, see <https://www.gnu.org/licenses/>.
 
+
 class Kind(Enum):
     REQUIRE_TASKS_TO_BE_COMPLETED = "require_tasks_to_be_completed"
     FORCE = "force"
@@ -42,10 +45,13 @@ class Kind(Enum):
     PUSH = "push"
     REQUIRE_PASSING_BUILDS_TO_MERGE = "require_passing_builds_to_merge"
     RESET_PULLREQUEST_APPROVALS_ON_CHANGE = "reset_pullrequest_approvals_on_change"
-    REQUIRE_DEFAULT_REVIEWER_APPROVALS_TO_MERGE = "require_default_reviewer_approvals_to_merge"
+    REQUIRE_DEFAULT_REVIEWER_APPROVALS_TO_MERGE = (
+        "require_default_reviewer_approvals_to_merge"
+    )
 
     def __str__(self):
         return self.value
+
 
 class BranchType(Enum):
     feature = "feature"
@@ -58,14 +64,12 @@ class BranchType(Enum):
     def __str__(self):
         return self.value
 
+
 class BranchRestriction(Typing2):
     id = Field()
-    kind = Field() \
-        .converter(loads=Kind, dumps=str)
-    branch_match_kind = Field() \
-        .converter(loads=BranchMatchKind, dumps=str)
-    branch_type = Field() \
-        .converter(loads=BranchType, dumps=str)
+    kind = Field().converter(loads=Kind, dumps=str)
+    branch_match_kind = Field().converter(loads=BranchMatchKind, dumps=str)
+    branch_type = Field().converter(loads=BranchType, dumps=str)
     pattern = Field()
     groups = Field().list_of()
     users = Field().list_of()
@@ -93,9 +97,10 @@ class BranchRestriction(Typing2):
             if group not in other.groups:
                 return False
 
-        return \
-            self.kind == other.kind and \
-            self.branch_match_kind == other.branch_match_kind and \
-            self.branch_type == other.branch_type and \
-            self.pattern == other.pattern and \
-            self.value == other.value
+        return (
+            self.kind == other.kind
+            and self.branch_match_kind == other.branch_match_kind
+            and self.branch_type == other.branch_type
+            and self.pattern == other.pattern
+            and self.value == other.value
+        )

@@ -28,6 +28,7 @@ endpoints are structured as /2.0/<branch>/<branch>/.../<leaf>
 Important: ApiLeaf and ApiBranchPagination are maybe not enough to cover 100% of bitbucket API cases.
 """
 
+
 class ApiLeaf(object):
     """
     A typical Leaf endpoint on 2.0 API.
@@ -35,6 +36,7 @@ class ApiLeaf(object):
 
     A Leaf is abstract and should be used with a Typing2 object
     """
+
     GET = 1 << 0
     UPDATE = 1 << 1
     DELETE = 1 << 2
@@ -57,7 +59,7 @@ class ApiLeaf(object):
 
         state = await self._network.get(self._generate_api_url())
         self.loads_from_dict(state)
-    
+
     async def update(self):
         """
         PUT
@@ -65,10 +67,7 @@ class ApiLeaf(object):
         if self._api_unsupported & ApiLeaf.UPDATE > 0:
             raise ApiUnsupported("PUT")
 
-        await self._network.put(
-            self._generate_api_url(),
-            self.dumps()
-        )
+        await self._network.put(self._generate_api_url(), self.dumps())
 
     async def delete(self):
         """
@@ -88,12 +87,10 @@ class ApiLeaf(object):
         if self._api_unsupported & ApiLeaf.CREATE > 0:
             raise ApiUnsupported("POST")
 
-        result = await self._network.post(
-            self._api_url,
-            self.dumps()
-        )
+        result = await self._network.post(self._api_url, self.dumps())
 
         self.loads_from_dict(result)
+
 
 class ApiBranchPagination(object):
     """
@@ -101,6 +98,7 @@ class ApiBranchPagination(object):
 
     Most of the time cast_leaf should be derived from ApiLeaf (see Warning on top)
     """
+
     NEW = 1 << 0
 
     def __init__(self, api_url, network, cast_leaf, api_unsupported=0):
@@ -108,15 +106,16 @@ class ApiBranchPagination(object):
         self._network = network
         self._cast_leaf = cast_leaf
         self._api_unsupported = api_unsupported
-    
+
     def get(self, filter=None, pagelen=Settings.MAX_PAGELEN):
         """
         GET with filter support
         """
+
         def cast(value):
             if self._cast_leaf is None:
                 return value
-            
+
             if issubclass(self._cast_leaf, ApiLeaf):
                 return self._cast_leaf(self._api_url, self._network, data=value)
             else:
@@ -126,7 +125,7 @@ class ApiBranchPagination(object):
             self._api_url if filter is None else f"{self._api_url}?{filter}",
             self._network,
             cast,
-            pagelen=pagelen
+            pagelen=pagelen,
         )
 
     def new(self):

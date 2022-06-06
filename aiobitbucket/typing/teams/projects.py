@@ -23,5 +23,6 @@ https://developer.atlassian.com/bitbucket/api/2/reference/resource/teams/%7Buser
 
 from typing_engine.typing import Typing2, Field
 
+
 class Project(Typing2):
     key = Field()
