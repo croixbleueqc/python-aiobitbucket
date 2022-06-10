@@ -54,11 +54,6 @@ class WebHooks(ApiBranchPagination):
     def __init__(self, network):
         self.network = network
 
-    async def get_by_workspace(self, api_url_workspace, network):
-        ApiBranchPagination.__init__(
-            self, api_url_workspace + "/hooks", network, WebHookUUID
-        )
-
     async def get_by_workspace(self, api_url_workspace):
         ApiBranchPagination.__init__(
             self, api_url_workspace + "/hooks", self.network, WebHookUUID
@@ -73,3 +68,23 @@ class WebHooks(ApiBranchPagination):
             return repo
         else:
             raise Exception(f"Repository '{repo_full_name}'' doesn't exist!")
+
+    async def create_subscription(
+        self,
+        workspace,
+        repo_name,
+        url,
+        active,
+        events,
+        description,
+    ):
+        subscription_endpoint = f"/2.0/repositories/{workspace}/{repo_name}/hooks"
+        payload = {
+            "description": description,
+            "url": url,
+            "active": active,
+            "events": events,
+        }
+        subscription = await self.network.post(subscription_endpoint, payload)
+
+        return subscription
