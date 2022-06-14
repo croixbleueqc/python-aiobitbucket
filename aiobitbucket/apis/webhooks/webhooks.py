@@ -59,15 +59,14 @@ class WebHooks(ApiBranchPagination):
             self, api_url_workspace + "/hooks", self.network, WebHookUUID
         )
 
-    async def get_by_repository_name(self, repo_full_name):
+    async def get_by_repository_name(self, workspace, repo_name):
         """Get hooks for a specific repository"""
 
-        repos = self.get(f'q=repository.full_name="{repo_full_name}"')
+        subscription_endpoint = f"/2.0/repositories/{workspace}/{repo_name}/hooks"
 
-        async for repo in repos:
-            return repo
-        else:
-            raise Exception(f"Repository '{repo_full_name}'' doesn't exist!")
+        subscriptions = await self.network.get(subscription_endpoint)
+
+        return subscriptions
 
     async def create_subscription(
         self,
