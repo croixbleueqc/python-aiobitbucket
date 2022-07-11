@@ -15,13 +15,14 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with python-aiobitbucket.  If not, see <https://www.gnu.org/licenses/>.
 
+from collections import UserDict
 from .network import Network
 from .apis.user.user import User
 from .apis.repositories.repositories import Repositories
 from .apis.webhooks.webhooks import WebHooks
 
 
-class Bitbucket(object):
+class Bitbucket(UserDict):
     """Bitbucket API main entrypoints"""
 
     def __init__(self, base_url="https://api.bitbucket.org"):
