@@ -25,7 +25,7 @@ class ApiUnsupported(AioBitbucketException):
         AioBitbucketException.__init__(self, f"API call {call_type} unsupported")
 
 
-class NetworkGeneric(AioBitbucketException):
+class NetworkError(AioBitbucketException):
     def __init__(self, msg, status, details):
         super().__init__(msg)
         self.status = status
@@ -35,31 +35,31 @@ class NetworkGeneric(AioBitbucketException):
         return self.status, self.details
 
 
-class NetworkBadRequest(NetworkGeneric):
+class NetworkBadRequest(NetworkError):
     def __init__(self, status, details):
         super().__init__(
             "Something was wrong with the client request.", status, details
         )
 
 
-class NetworkUnauthorized(NetworkGeneric):
+class NetworkUnauthorized(NetworkError):
     def __init__(self, status, details):
         super().__init__("Authentication is required", status, details)
 
 
-class NetworkForbidden(NetworkGeneric):
+class NetworkForbidden(NetworkError):
     def __init__(self, status, details):
         super().__init__(
             "Access to the specified resource is not permitted.", status, details
         )
 
 
-class NetworkNotFound(NetworkGeneric):
+class NetworkNotFound(NetworkError):
     def __init__(self, status, details):
         super().__init__("The requested resource does not exist.", status, details)
 
 
-class NetworkServerErrors(NetworkGeneric):
+class NetworkServerErrors(NetworkError):
     def __init__(self, status, details):
         super().__init__("Something unexpected went wrong.", status, details)
 
