@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with python-aiobitbucket.  If not, see <https://www.gnu.org/licenses/>.
 
+import logging
 from ...typing.users.permission import Permission
 from ...api import ApiBranchPagination
 
@@ -41,13 +42,11 @@ class Repositories(ApiBranchPagination):
     async def get_by_full_name(self, repo_full_name):
         """Get permissions for a specific repository"""
 
-        repos = self.get(f'q=repository.full_name="{repo_full_name}"')
-
-        async for repo in repos:
-            return repo
-        else:
-            raise Exception(
-                f"Repository '{repo}'' doesn't exist or you don't have enough privileges to know it !"
+        try:
+            return self.get(f'q=repository.full_name="{repo_full_name}"')
+        except Exception as e:
+            logging.exception(
+                f"Repository '{repo_full_name}'' doesn't exist or you don't have enough privileges to know it ! {e}"
             )
 
 
