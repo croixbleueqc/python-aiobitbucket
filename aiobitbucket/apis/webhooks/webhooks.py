@@ -87,3 +87,9 @@ class WebHooks(ApiBranchPagination):
         subscription = await self.network.post(subscription_endpoint, payload)
 
         return subscription
+
+    async def delete_subscription(self, workspace, repo_name, subscription_id):
+        subscription_endpoint = (
+            f"/2.0/repositories/{workspace}/{repo_name}/hooks/{subscription_id}"
+        )
+        await self.network.delete(subscription_endpoint)
