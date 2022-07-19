@@ -20,6 +20,8 @@ from .errors import ApiUnsupported
 from .network import NetworkPagination
 from .settings import Settings
 
+from typing_engine.typing import Typing2
+
 """
 Define base class to implement 2.0 API endpoints.
 
@@ -29,7 +31,7 @@ Important: ApiLeaf and ApiBranchPagination are maybe not enough to cover 100% of
 """
 
 
-class ApiLeaf(object):
+class ApiLeaf(Typing2):
     """
     A typical Leaf endpoint on 2.0 API.
     Most of the time, CREATE (POST) is delegate from a branch (an intermediate path)
