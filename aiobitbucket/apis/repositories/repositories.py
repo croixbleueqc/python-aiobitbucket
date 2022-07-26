@@ -21,10 +21,12 @@ https://developer.atlassian.com/bitbucket/api/2/reference/resource/repositories
 
 from .repository import RepoSlug
 
+
 class Repositories(object):
     """
     https://developer.atlassian.com/bitbucket/api/2/reference/resource/repositories
     """
+
     def __init__(self, network):
         self._network = network
 

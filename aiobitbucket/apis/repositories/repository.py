@@ -28,6 +28,7 @@ from .refs import Refs
 from .src import Src
 from .pullrequests import PullRequests
 
+
 class RepoSlug(ApiLeaf, repository.Repository):
     """
     Manages repository
@@ -40,8 +41,11 @@ class RepoSlug(ApiLeaf, repository.Repository):
     - PUT: Update a repository
     - DELETE: Deletes the repository. This is an irreversible operation.
     """
+
     def __init__(self, network, workspace_name, repo_slug_name, data=None, parent=None):
-        ApiLeaf.__init__(self, f"/2.0/repositories/{workspace_name}/{repo_slug_name}", network)
+        ApiLeaf.__init__(
+            self, f"/2.0/repositories/{workspace_name}/{repo_slug_name}", network
+        )
         repository.Repository.__init__(self, data=data, parent=parent)
         self._workspace_name = workspace_name
         self._repo_slug_name = repo_slug_name
@@ -57,19 +61,21 @@ class RepoSlug(ApiLeaf, repository.Repository):
     def branch_restrictions(self):
         """Branch restrictions API accessor"""
         return BranchRestrictions(self._api_url, self._network)
-    
+
     def group_privileges(self):
         """Group Privileges API accessor"""
-        return GroupPrivilegesRepoSlug(self._network, self._workspace_name, self._repo_slug_name)
+        return GroupPrivilegesRepoSlug(
+            self._network, self._workspace_name, self._repo_slug_name
+        )
 
     def pipelines(self):
         """Find Pipelines accessor"""
         return Pipelines(self._api_url, self._network)
-    
+
     def refs(self):
         """Branches and tags accessor"""
         return Refs(self._api_url, self._network)
-    
+
     def src(self):
         """Source files accessor"""
         return Src(self._api_url, self._network)

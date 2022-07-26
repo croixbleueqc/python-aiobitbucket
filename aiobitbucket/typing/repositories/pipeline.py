@@ -23,6 +23,7 @@ https://developer.atlassian.com/bitbucket/api/2/reference/resource/repositories/
 
 from typing_engine.typing import Typing2, Field
 
+
 class RepositoryPipelinesConfiguration(Typing2):
     enabled = Field(default=False)
 
@@ -31,20 +32,25 @@ class RepositoryPipelinesConfiguration(Typing2):
             return False
         return other.enabled == self.enabled
 
+
 class StateResult(Typing2):
     name = Field()
+
 
 class State(Typing2):
     name = Field()
     result = Field(instanciator=StateResult)
 
+
 class Commit(Typing2):
     hash = Field()
+
 
 class Target(Typing2):
     ref_type = Field()
     ref_name = Field()
     commit = Field(instanciator=Commit)
+
 
 class PipelineUUID(Typing2):
     state = Field(instanciator=State)

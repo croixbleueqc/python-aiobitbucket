@@ -15,12 +15,14 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with python-aiobitbucket.  If not, see <https://www.gnu.org/licenses/>.
 
+from collections import UserDict
 from .network import Network
 from .apis.user.user import User
 from .apis.repositories.repositories import Repositories
 from .apis.webhooks.webhooks import WebHooks
 
-class Bitbucket(object):
+
+class Bitbucket(UserDict):
     """Bitbucket API main entrypoints"""
 
     def __init__(self, base_url="https://api.bitbucket.org"):
@@ -32,12 +34,8 @@ class Bitbucket(object):
     def open_basic_session(self, username, password):
         """Connect to the API with basic authentication"""
 
-        self.network.create_session(
-            auth=self.network.basic_auth(username, password)
-        )
-    
+        self.network.create_session(auth=self.network.basic_auth(username, password))
+
     async def close_session(self):
         """Clean up the session"""
         await self.network.close_session()
-
-

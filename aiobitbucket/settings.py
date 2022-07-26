@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with python-aiobitbucket.  If not, see <https://www.gnu.org/licenses/>.
 
+
 class Settings:
     # HTTP returns code
     SUCCESS = 200

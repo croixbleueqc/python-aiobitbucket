@@ -25,10 +25,12 @@ https://developer.atlassian.com/bitbucket/api/2/reference/resource/user/permissi
 from typing_engine.typing import Typing2, Field
 from ..repositories.repository import Repository
 
+
 class Permission(Typing2):
     """
     https://developer.atlassian.com/bitbucket/api/2/reference/resource/user/permissions/repositories
     """
+
     READ = "read"
     WRITE = "write"
     ADMIN = "admin"

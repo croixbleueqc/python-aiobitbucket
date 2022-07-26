@@ -26,6 +26,7 @@ from ..teams.projects import Project
 
 from enum import Enum
 
+
 class ForkPolicy(Enum):
     ALLOW_FORKS = "allow_forks"
     NO_PUBLIC_FORKS = "no_public_forks"
@@ -34,6 +35,7 @@ class ForkPolicy(Enum):
     def __str__(self):
         return self.value
 
+
 class Scm(Enum):
     GIT = "git"
     HG = "hg"
@@ -41,9 +43,11 @@ class Scm(Enum):
     def __str__(self):
         return self.value
 
+
 class LinksClone(Typing2):
     href = Field()
     name = Field()
+
 
 class Links(Typing2):
     clone = Field().list_of(inside_instanciator=LinksClone)
@@ -55,16 +59,15 @@ class Links(Typing2):
 
         return None
 
+
 class Repository(Typing2):
-    scm = Field(default=Scm.GIT) \
-        .converter(loads=Scm, dumps=str)
+    scm = Field(default=Scm.GIT).converter(loads=Scm, dumps=str)
     project = Field(instanciator=Project)
     is_private = Field(default=True)
     name = Field()
     description = Field()
-    fork_policy = Field(default=ForkPolicy.NO_PUBLIC_FORKS) \
-        .converter(loads=ForkPolicy, dumps=str)
+    fork_policy = Field(default=ForkPolicy.NO_PUBLIC_FORKS).converter(
+        loads=ForkPolicy, dumps=str
+    )
     language = Field(default="")
     links = Field(instanciator=Links)
-
-

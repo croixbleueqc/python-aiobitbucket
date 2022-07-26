@@ -17,10 +17,12 @@
 
 from typing_engine.typing import Typing2, Field
 
+
 class Target(Typing2):
     hash = Field()
     date = Field()
     message = Field()
+
 
 class Branch(Typing2):
     name = Field()

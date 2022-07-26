@@ -24,26 +24,32 @@ https://developer.atlassian.com/bitbucket/api/2/reference/resource/repositories/
 from typing_engine.typing import Typing2, Field
 from enum import Enum
 
+
 class State(Enum):
-    MERGED="MERGED"
-    SUPERSEDED="SUPERSEDED"
-    OPEN="OPEN"
-    DECLINED="DECLINED"
+    MERGED = "MERGED"
+    SUPERSEDED = "SUPERSEDED"
+    OPEN = "OPEN"
+    DECLINED = "DECLINED"
 
     def __str__(self):
         return self.value
 
+
 class Branch(Typing2):
     name = Field()
+
 
 class SrcDst(Typing2):
     branch = Field(instanciator=Branch)
 
+
 class LinksHref(Typing2):
     href = Field()
 
+
 class Links(Typing2):
     html = Field(instanciator=LinksHref)
+
 
 class PullRequest(Typing2):
     title = Field()

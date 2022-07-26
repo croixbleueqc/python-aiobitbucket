@@ -18,6 +18,7 @@
 from ...api import ApiLeaf, ApiBranchPagination
 from ...typing.repositories import pullrequests
 
+
 class PullRequest(ApiLeaf, pullrequests.PullRequest):
     """
     Manages Pull Request
@@ -29,6 +30,7 @@ class PullRequest(ApiLeaf, pullrequests.PullRequest):
     - UPDATE: Mutates the specified pull request.
     - POST: Creates a new pull request where the destination repository is this repository and the author is the authenticated user. (Delegate from PullRequests)
     """
+
     def __init__(self, api_url, network, id=None, data=None, parent=None):
         ApiLeaf.__init__(self, api_url, network, api_unsupported=ApiLeaf.DELETE)
         pullrequests.PullRequest.__init__(self, data=data, parent=parent)
@@ -40,10 +42,8 @@ class PullRequest(ApiLeaf, pullrequests.PullRequest):
         if self.id is None:
             return self._api_url
         else:
-            return "{}/{}".format(
-                self._api_url,
-                self.id
-            )
+            return "{}/{}".format(self._api_url, self.id)
+
 
 class PullRequests(ApiBranchPagination):
     """
@@ -53,8 +53,11 @@ class PullRequests(ApiBranchPagination):
     - GET: Returns all pull requests on the specified repository.
     - POST: Delegate to PullRequest object
     """
+
     def __init__(self, api_url_refs, network):
-        ApiBranchPagination.__init__(self, api_url_refs + "/pullrequests", network, PullRequest)
+        ApiBranchPagination.__init__(
+            self, api_url_refs + "/pullrequests", network, PullRequest
+        )
 
     def get(self, filter=None):
         """Override the ApiBranchPagination.get
@@ -66,4 +69,3 @@ class PullRequests(ApiBranchPagination):
 
     def by_id(self, id):
         return PullRequest(self._api_url, self._network, id=id)
-

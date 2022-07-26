@@ -23,6 +23,7 @@ https://developer.atlassian.com/bitbucket/api/2/reference/resource/repositories/
 
 from typing_engine.typing import Typing2, Field
 
+
 class DeployKey(Typing2):
     label = Field(default="")
     key = Field()

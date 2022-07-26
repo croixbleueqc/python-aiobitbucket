@@ -19,6 +19,7 @@ from ...api import ApiLeaf
 
 from ...typing.repositories import pipeline
 
+
 class PipelinesConfig(ApiLeaf, pipeline.RepositoryPipelinesConfiguration):
     """
     Manage Pipelines Configuation
@@ -29,13 +30,21 @@ class PipelinesConfig(ApiLeaf, pipeline.RepositoryPipelinesConfiguration):
     - GET: Retrieve the repository pipelines configuration.
     - PUT: Update the pipelines configuration for a repository.
     """
+
     def __init__(self, api_url_reposlug, network, data=None, parent=None):
-        ApiLeaf.__init__(self, api_url_reposlug + "/pipelines_config", network, ApiLeaf.DELETE | ApiLeaf.CREATE)
-        pipeline.RepositoryPipelinesConfiguration.__init__(self, data=data, parent=parent)
+        ApiLeaf.__init__(
+            self,
+            api_url_reposlug + "/pipelines_config",
+            network,
+            ApiLeaf.DELETE | ApiLeaf.CREATE,
+        )
+        pipeline.RepositoryPipelinesConfiguration.__init__(
+            self, data=data, parent=parent
+        )
 
     async def enable(self):
         """Enable pipelines
-        
+
         Get previous state and update it.
         """
         await self.get()
@@ -46,7 +55,7 @@ class PipelinesConfig(ApiLeaf, pipeline.RepositoryPipelinesConfiguration):
 
     async def disable(self):
         """Disable pipelines
-        
+
         Get previous state and update it.
         """
         await self.get()

@@ -18,6 +18,7 @@
 from ...api import ApiLeaf, ApiBranchPagination
 from ...typing.repositories import pipeline
 
+
 class PipelineUUID(ApiLeaf, pipeline.PipelineUUID):
     def __init__(self, api_url, network, id=None, data=None, parent=None):
         ApiLeaf.__init__(self, api_url, network)
@@ -25,6 +26,7 @@ class PipelineUUID(ApiLeaf, pipeline.PipelineUUID):
 
         if id is not None:
             self.id = id
+
 
 class Pipelines(ApiBranchPagination):
     """
@@ -34,5 +36,8 @@ class Pipelines(ApiBranchPagination):
 
 
     """
+
     def __init__(self, api_url_reposlug, network):
-        ApiBranchPagination.__init__(self, api_url_reposlug + "/pipelines/", network, PipelineUUID)
+        ApiBranchPagination.__init__(
+            self, api_url_reposlug + "/pipelines/", network, PipelineUUID
+        )

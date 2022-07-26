@@ -28,9 +28,17 @@ import aiohttp
 import logging
 
 from .settings import Settings
-from .errors import NetworkBadRequest, NetworkForbidden, NetworkNotFound, NetworkUnauthorized, NetworkServerErrors, SessionAlreadyExist
+from .errors import (
+    NetworkBadRequest,
+    NetworkForbidden,
+    NetworkNotFound,
+    NetworkUnauthorized,
+    NetworkServerErrors,
+    SessionAlreadyExist,
+)
 
 logger = logging.getLogger(Settings.LOG_NETWORK)
+
 
 class Network(object):
     """
@@ -38,6 +46,7 @@ class Network(object):
 
     Support standard operations (session, get, post, ...)
     """
+
     def __init__(self, base_url):
         self.session = None
         self.base_url = base_url
@@ -50,15 +59,15 @@ class Network(object):
             self.session = aiohttp.ClientSession(headers=headers, auth=auth)
         else:
             raise SessionAlreadyExist()
-    
+
     async def close_session(self):
         if self.session is not None:
             await self.session.close()
             self.session = None
-        
+
         await asyncio.sleep(0.250)
 
-    async def answer(self, resp : aiohttp.ClientResponse):
+    async def answer(self, resp: aiohttp.ClientResponse):
         status = resp.status
 
         if resp.content_type == "application/json":
@@ -81,7 +90,7 @@ class Network(object):
         else:
             raise NetworkServerErrors(status, payload)
 
-    async def get(self, url : str):
+    async def get(self, url: str):
         # Bitbucket pagination returns an absolute url to be used.
         # So we need to handle absolute/relative cases
         final_url = url if url.startswith("http") else self.base_url + url
@@ -92,14 +101,14 @@ class Network(object):
     async def put(self, url, payload):
         put_keywords = {}
         if isinstance(payload, dict):
-            put_keywords["json"]=payload
+            put_keywords["json"] = payload
         else:
             # Support some legacy API calls
-            put_keywords["data"]=payload
+            put_keywords["data"] = payload
 
         async with self.session.put(self.base_url + url, **put_keywords) as resp:
             return await self.answer(resp)
-    
+
     async def post(self, url, payload):
         async with self.session.post(self.base_url + url, json=payload) as resp:
             return await self.answer(resp)
@@ -112,6 +121,7 @@ class Network(object):
         async with self.session.delete(self.base_url + url) as resp:
             await self.answer(resp)
 
+
 class NetworkPagination(object):
     """
     Generic support for pagination
@@ -119,7 +129,9 @@ class NetworkPagination(object):
     https://developer.atlassian.com/bitbucket/api/2/reference/meta/pagination
     """
 
-    def __init__(self, url : str, network, dynamic_cast=None, pagelen=Settings.MAX_PAGELEN):
+    def __init__(
+        self, url: str, network, dynamic_cast=None, pagelen=Settings.MAX_PAGELEN
+    ):
         if pagelen is None:
             self.url = url
         elif "?" in url:

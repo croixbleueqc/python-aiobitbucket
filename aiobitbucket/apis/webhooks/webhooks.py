@@ -14,52 +14,82 @@
 
 # You should have received a copy of the GNU Lesser General Public License
 # along with python-aiobitbucket.  If not, see <https://www.gnu.org/licenses/>.
-from ...api import ApiLeaf,ApiBranchPagination
+from ...api import ApiLeaf, ApiBranchPagination
 from ...typing.webhooks import webhook
 
-class WebHookUUID (ApiLeaf,webhook.WebHookUUID):
-    """
-        Manages one webhook
 
-        https://developer.atlassian.com/bitbucket/api/2/reference/resource/workspaces/%7Bworkspace%7D/hooks/%7Buid%7D
-
-        Coverage:
-        - DELETE : Deletes the specified webhook subscription from the given workspace.
-        - GET : Returns the webhook with the specified id installed on the given workspace.
-        - PUT : Updates the specified webhook subscription.
-                The following properties can be mutated:
-                    description
-                    url
-                    active
-                    events
+class WebHookUUID(ApiLeaf, webhook.WebHookUUID):
     """
-    def __init__(self, api_url_workspace, network, uid=None, data=None , parent = None):
-        ApiLeaf(api_url_workspace+f"/hooks/{uid}",network,api_unsupported=ApiLeaf.CREATE)
+    Manages one webhook
+
+    https://developer.atlassian.com/bitbucket/api/2/reference/resource/workspaces/%7Bworkspace%7D/hooks/%7Buid%7D
+
+    Coverage:
+    - DELETE : Deletes the specified webhook subscription from the given workspace.
+    - GET : Returns the webhook with the specified id installed on the given workspace.
+    - PUT : Updates the specified webhook subscription.
+            The following properties can be mutated:
+                description
+                url
+                active
+                events
+    """
+
+    def __init__(self, api_url_workspace, network, uid=None, data=None, parent=None):
+        ApiLeaf(
+            api_url_workspace + f"/hooks/{uid}", network, api_unsupported=ApiLeaf.CREATE
+        )
         self._network = network
         self.id = uid
         self.data = data
-        
-    
+
+
 class WebHooks(ApiBranchPagination):
     """
     Manages WebHooks
 
     https://developer.atlassian.com/bitbucket/api/2/reference/resource/workspaces/%7Bworkspace%7D/hooks
     """
+
     def __init__(self, network):
         self.network = network
-    async def get_by_workspace(self, api_url_workspace, network):
-        ApiBranchPagination.__init__(self, api_url_workspace + "/hooks", network, WebHookUUID)
-    
-    async def get_by_workspace(self,api_url_workspace):
-        ApiBranchPagination.__init__(self, api_url_workspace+"/hooks",self.network,WebHookUUID)
-    
-    async def get_by_repository_name(self, repo_full_name):
+
+    async def get_by_workspace(self, api_url_workspace):
+        ApiBranchPagination.__init__(
+            self, api_url_workspace + "/hooks", self.network, WebHookUUID
+        )
+
+    async def get_by_repository_name(self, workspace, repo_name):
         """Get hooks for a specific repository"""
 
-        repos = self.get(f'q=repository.full_name="{repo_full_name}"')
+        subscription_endpoint = f"/2.0/repositories/{workspace}/{repo_name}/hooks"
 
-        async for repo in repos:
-            return repo
-        else:
-            raise Exception(f"Repository '{repo_full_name}'' doesn't exist!")
+        subscriptions = await self.network.get(subscription_endpoint)
+
+        return subscriptions
+
+    async def create_subscription(
+        self,
+        workspace,
+        repo_name,
+        url,
+        active,
+        events,
+        description,
+    ):
+        subscription_endpoint = f"/2.0/repositories/{workspace}/{repo_name}/hooks"
+        payload = {
+            "description": description,
+            "url": url,
+            "active": active,
+            "events": events,
+        }
+        subscription = await self.network.post(subscription_endpoint, payload)
+
+        return subscription
+
+    async def delete_subscription(self, workspace, repo_name, subscription_id):
+        subscription_endpoint = (
+            f"/2.0/repositories/{workspace}/{repo_name}/hooks/{subscription_id}"
+        )
+        await self.network.delete(subscription_endpoint)

@@ -15,41 +15,54 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with python-aiobitbucket.  If not, see <https://www.gnu.org/licenses/>.
 
+
 class AioBitbucketException(Exception):
     pass
+
 
 class ApiUnsupported(AioBitbucketException):
     def __init__(self, call_type):
         AioBitbucketException.__init__(self, f"API call {call_type} unsupported")
 
-class NetworkGeneric(AioBitbucketException):
+
+class NetworkError(AioBitbucketException):
     def __init__(self, msg, status, details):
         super().__init__(msg)
         self.status = status
         self.details = details
-    
+
     def getNetworkResponse(self):
         return self.status, self.details
 
-class NetworkBadRequest(NetworkGeneric):
-    def __init__(self, status, details):
-        super().__init__("Something was wrong with the client request.", status, details)
 
-class NetworkUnauthorized(NetworkGeneric):
+class NetworkBadRequest(NetworkError):
+    def __init__(self, status, details):
+        super().__init__(
+            "Something was wrong with the client request.", status, details
+        )
+
+
+class NetworkUnauthorized(NetworkError):
     def __init__(self, status, details):
         super().__init__("Authentication is required", status, details)
 
-class NetworkForbidden(NetworkGeneric):
-    def __init__(self, status, details):
-        super().__init__("Access to the specified resource is not permitted.", status, details)
 
-class NetworkNotFound(NetworkGeneric):
+class NetworkForbidden(NetworkError):
+    def __init__(self, status, details):
+        super().__init__(
+            "Access to the specified resource is not permitted.", status, details
+        )
+
+
+class NetworkNotFound(NetworkError):
     def __init__(self, status, details):
         super().__init__("The requested resource does not exist.", status, details)
 
-class NetworkServerErrors(NetworkGeneric):
+
+class NetworkServerErrors(NetworkError):
     def __init__(self, status, details):
         super().__init__("Something unexpected went wrong.", status, details)
+
 
 class SessionAlreadyExist(AioBitbucketException):
     def __init__(self):
