@@ -95,6 +95,8 @@ class Network(object):
         # So we need to handle absolute/relative cases
         final_url = url if url.startswith("http") else self.base_url + url
 
+        if not self.session:
+            raise Exception("No session")
         async with self.session.get(final_url) as resp:
             return await self.answer(resp)
 
@@ -106,18 +108,26 @@ class Network(object):
             # Support some legacy API calls
             put_keywords["data"] = payload
 
+        if not self.session:
+            raise Exception("No session")
         async with self.session.put(self.base_url + url, **put_keywords) as resp:
             return await self.answer(resp)
 
     async def post(self, url, payload):
+        if not self.session:
+            raise Exception("No session")
         async with self.session.post(self.base_url + url, json=payload) as resp:
             return await self.answer(resp)
 
     async def post_form(self, url, payload):
+        if not self.session:
+            raise Exception("No session")
         async with self.session.post(self.base_url + url, data=payload) as resp:
             return await self.answer(resp)
 
     async def delete(self, url):
+        if not self.session:
+            raise Exception("No session")
         async with self.session.delete(self.base_url + url) as resp:
             await self.answer(resp)
 
