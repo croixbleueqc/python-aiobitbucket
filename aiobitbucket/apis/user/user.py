@@ -43,7 +43,9 @@ class Repositories(ApiBranchPagination):
         """Get permissions for a specific repository"""
 
         try:
-            return self.get(f'q=repository.full_name="{repo_full_name}"')
+            repos = self.get(f'q=repository.full_name="{repo_full_name}"')
+            async for repo in repos:
+                return repo
         except Exception as e:
             logging.exception(
                 f"Repository '{repo_full_name}'' doesn't exist or you don't have enough privileges to know it ! {e}"
